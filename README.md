@@ -6,14 +6,14 @@ Simple header-only C++ library for unit tests.
 A test is represented by one of the macros TEST, TEST_EXCEPTION, and TEST_NO_EXCEPTION.
 
 TEST accepts a C++ expression as argument. The expression must evaluate to a boolean. The
-test is considered successful if, an only if, the evaluation yields true.
+test is considered successful if, and only if, the evaluation yields true.
 
 TEST_EXCEPTION accepts two arguments, a C++ expression and a string. The test is considered
-successful if, an only if, the expression throws an exception, and the exception's explanatory string
+successful if, and only if, the expression throws an exception, and the exception's explanatory string
 as obtained by `what()` equals the string passed as the second argument.
 
 TEST_NO_EXCEPTION accepts a C++ expression as argument. The test is considered successful if,
-an only if, the expression throws no exception.
+and only if, the expression throws no exception.
 
 One ore more tests form a test suite. A test suite is represented by a C++ source file containing one ore more of the macros
 described above. The file must also contain the Macros TEST_SUITE_INIT, TEST_SUITE_START and TEST_SUITE_END to work properly.
