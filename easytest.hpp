@@ -2,10 +2,12 @@
 #define EASYTEST_HPP
 
 #include <iostream>
+#include <string>
 
 #define TEST_SUITE_INIT                \
   unsigned int failed_tests_count = 0; \
-  bool test_suite_crached = false;
+  bool test_suite_crached = false;     \
+  std::string test_comment = "";
 
 #define TEST_SUITE_START               \
   try                                  \
@@ -41,7 +43,8 @@
     if ( !( EXPRESSION ) )                                                                       \
     {                                                                                            \
       ++failed_tests_count;                                                                      \
-      std::cerr << __FILE__ << ":" << __LINE__ << " test failed: " << #EXPRESSION << "\n";       \
+      std::cerr << __FILE__ << ":" << __LINE__ << " test failed: " << #EXPRESSION << std::endl;  \
+      if ( test_comment != "" ) std::cerr << test_comment << std::endl;                           \
     }                                                                                            \
   }                                                                                              \
   catch (std::exception& ex)                                                                     \
@@ -50,26 +53,31 @@
     ++failed_tests_count;                                                                        \
     std::cerr << __FILE__ << ":" << __LINE__ << " test throw exception: " << #EXPRESSION         \
               << " (" << ex.what() << ")\n";                                                     \
-  }
-
-#define TEST_EXCEPTION(EXPRESSION, EXPECTED_MESSAGE)                                             \
-  try                                                                                            \
-  {                                                                                              \
-    EXPRESSION;                                                                                  \
-    ++failed_tests_count;                                                                        \
-    std::cerr << __FILE__ << ":" << __LINE__ << " test_exception failed: " << #EXPRESSION <<     \
-      " (no exception thrown))\n";                                                               \
+    if ( test_comment != "" ) std::cerr << test_comment << std::endl;                             \
   }                                                                                              \
-  catch (std::exception& ex)                                                                     \
-  {                                                                                              \
-    std::string msg { ex.what() };                                                               \
-    if ( msg != EXPECTED_MESSAGE )                                                               \
-    {                                                                                            \
-      ++failed_tests_count;                                                                      \
-      std::cerr << __FILE__ << ":" << __LINE__ << " test_exception failed: " << #EXPRESSION <<   \
-        " (wrong message, expected: ``" << EXPECTED_MESSAGE << "´´, found: ``" << msg << "´´)\n"; \
-    }                                                                                            \
-  }
+  test_comment = "";
+
+#define TEST_EXCEPTION(EXPRESSION, EXPECTED_MESSAGE)                                                         \
+  try                                                                                                        \
+  {                                                                                                          \
+    EXPRESSION;                                                                                              \
+    ++failed_tests_count;                                                                                    \
+    std::cerr << __FILE__ << ":" << __LINE__ << " test_exception failed: " << #EXPRESSION <<                 \
+      " (no exception thrown))" << std::endl;                                                                \
+    if ( test_comment != "" ) std::cerr << test_comment << std::endl;                                         \
+  }                                                                                                          \
+  catch (std::exception& ex)                                                                                 \
+  {                                                                                                          \
+    std::string msg { ex.what() };                                                                           \
+    if ( msg != EXPECTED_MESSAGE )                                                                           \
+    {                                                                                                        \
+      ++failed_tests_count;                                                                                  \
+      std::cerr << __FILE__ << ":" << __LINE__ << " test_exception failed: " << #EXPRESSION <<               \
+        " (wrong message, expected: ``" << EXPECTED_MESSAGE << "´´, found: ``" << msg << "´´)" << std::endl; \
+      if ( test_comment != "" ) std::cerr << test_comment << std::endl;                                       \
+    }                                                                                                        \
+  }                                                                                                          \
+  test_comment = "";
 
 #define TEST_NO_EXCEPTION(EXPRESSION)                                                            \
   try                                                                                            \
@@ -80,7 +88,9 @@
   {                                                                                              \
     ++failed_tests_count;                                                                        \
     std::cerr << __FILE__ << ":" << __LINE__ << " test_no_exception failed: " << #EXPRESSION <<  \
-      " (expection thrown with message: ``" << ex.what() << "´´)\n";                                 \
-  }
+      " (expection thrown with message: ``" << ex.what() << "´´)" << std::endl;                  \
+    if ( test_comment != "" ) std::cerr << test_comment << std::endl;                             \
+  }                                                                                              \
+  test_comment = "";
 
 #endif
